@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import BadDropdown from './modules/badDropdown';
 import Dropdown from "./modules/Dropdown";
 import axios from "axios";
 
 const LOCALHOST = 'http://localhost:8080/'
-
 
 function App() {
     const [make, setMake] = useState<string | null>(null);
@@ -15,22 +13,26 @@ function App() {
     const [year, setYear] = useState<string | null>(null);
     const [yearOpts, setYearOpts] = useState<string[]>([]);
 
-    const handleMakeChange = (value: string | null) => {
+    const handleMakeChange = (event: React.SyntheticEvent, value: string | null) => {
         setMake(value);
-    }
-    const handleModelChange = (value: string | null) => {
+        setModel(null);
+        setModelOpts([]);
+        setYear(null);
+        setYearOpts([]);
+    };
+    const handleModelChange = (event: React.SyntheticEvent, value: string | null) => {
         setModel(value);
-    }
-    const handleYearChange = (value: string | null) => {
+        setYear(null);
+        setYearOpts([]);
+    };
+    const handleYearChange = (event: React.SyntheticEvent, value: string | null) => {
         setYear(value);
-    }
-
+    };
 
     useEffect(() => {
         axios.get(LOCALHOST + 'makes')
             .then(({data}) => {
                 setMakeOpts(data);
-                //console.log(data);
             })
             .catch((error) => {
                 console.log(error);
@@ -41,31 +43,30 @@ function App() {
         let URL = LOCALHOST + 'models/';
         if (make != null) {
             URL += make;
+
+            axios.get(URL)
+                .then(({data}) => {
+                    setModelOpts(data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         }
-        axios.get(URL)
-            .then(({data}) => {
-                setModelOpts(data);
-                //console.log(data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
     }, [make]);
 
     useEffect(() => {
         let URL = LOCALHOST + 'years/';
-        console.log(URL);
         if (model != null) {
-            URL += encodeURIComponent(model as string);
+            URL += encodeURIComponent(model);
+
+            axios.get(URL)
+                .then(({data}) => {
+                    setYearOpts(data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         }
-        axios.get(URL)
-            .then(({data}) => {
-                setYearOpts(data);
-                //console.log(data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
     }, [model]);
 
     return (
@@ -74,12 +75,9 @@ function App() {
 
             </header>
 
-
-            <Dropdown value={make} options={makeOpts} label={"Make"}/>
-            <Dropdown value={model} options={modelOpts} label={"Model"}/>
-            <Dropdown value={year} options={yearOpts} label={"Year"}/>
-
-
+            <Dropdown value={make} options={makeOpts} label={"Make"} onChange={handleMakeChange}/>
+            <Dropdown value={model} options={modelOpts} label={"Model"} onChange={handleModelChange}/>
+            <Dropdown value={year} options={yearOpts} label={"Year"} onChange={handleYearChange}/>
         </div>
     );
 }
