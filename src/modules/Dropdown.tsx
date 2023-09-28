@@ -1,20 +1,30 @@
 import React, {useEffect, useState} from 'react';
+import {
+    Autocomplete,
+    AutocompleteChangeDetails,
+    AutocompleteChangeReason, AutocompleteInputChangeReason,
+    AutocompleteValue,
+    TextField
+} from '@mui/material';
+import './Dropdown.css'
 
-function Dropdown() {
-    const [makes, setMakes] = useState([]);
-
-    useEffect(() => {
-        fetch('http://localhost:8080/makes')
-            .then((resp) => resp.json())
-            .then(json => {
-                setMakes(json);
-            });
-        console.log(makes);
-    }, [makes]);
+function Dropdown(props: { value: string | null, options: string[], label: string}) {
 
     return (
-        <div className="Dropdown">
-
+        <div className='Dropdown'>
+            <Autocomplete
+                className='Autocomplete'
+                value={props.value}
+                options={props.options}
+                renderInput={(params) => (
+                    <TextField {...params}
+                               className='TextField'
+                               label={props.label}
+                               variant='outlined'
+                    />
+                )
+                }
+            />
         </div>
     );
 }
