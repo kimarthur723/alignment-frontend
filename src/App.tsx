@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import Dropdown from "./modules/Dropdown";
-import Table from "./modules/Table"
+import DataTable from "./modules/DataTable"
 import axios from "axios";
 
 const LOCALHOST = 'http://localhost:8080/'
@@ -99,7 +99,7 @@ function App() {
             <Dropdown value={make} options={makeOpts} label={"Make"} onChange={handleMakeChange}/>
             <Dropdown value={model} options={modelOpts} label={"Model"} onChange={handleModelChange}/>
             <Dropdown value={year} options={yearOpts} label={"Year"} onChange={handleYearChange}/>
-            <Table data={alignmentData}/>
+            <DataTable data={alignmentData}/>
         </div>
     );
 }
