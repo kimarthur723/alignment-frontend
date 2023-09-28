@@ -1,3 +1,6 @@
+.Dropdown {
+    display: flex;
+}
 
 .Autocomplete {
     vertical-align: center;

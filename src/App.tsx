@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import Dropdown from "./modules/Dropdown";
+import Table from "./modules/Table"
 import axios from "axios";
 
 const LOCALHOST = 'http://localhost:8080/'
@@ -12,6 +13,8 @@ function App() {
     const [modelOpts, setModelOpts] = useState<string[]>([]);
     const [year, setYear] = useState<string | null>(null);
     const [yearOpts, setYearOpts] = useState<string[]>([]);
+    const [alignmentData, setAlignmentData] = useState<string[]>([]);
+
 
     const handleMakeChange = (event: React.SyntheticEvent, value: string | null) => {
         setMake(value);
@@ -69,6 +72,24 @@ function App() {
         }
     }, [model]);
 
+    useEffect(() => {
+        let URL = LOCALHOST + 'cars/';
+        if (make != null && model != null && year != null) {
+            URL += encodeURIComponent(make) + '/' + encodeURIComponent(model) + '/' + encodeURIComponent(year);
+
+            axios.get(URL)
+                .then(({data}) => {
+                    setAlignmentData(data);
+                    console.log(data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            setAlignmentData([]);
+        }
+    }, [make, model, year]);
+
     return (
         <div className="App">
             <header className="App-header">
@@ -78,6 +99,7 @@ function App() {
             <Dropdown value={make} options={makeOpts} label={"Make"} onChange={handleMakeChange}/>
             <Dropdown value={model} options={modelOpts} label={"Model"} onChange={handleModelChange}/>
             <Dropdown value={year} options={yearOpts} label={"Year"} onChange={handleYearChange}/>
+            <Table data={alignmentData}/>
         </div>
     );
 }
